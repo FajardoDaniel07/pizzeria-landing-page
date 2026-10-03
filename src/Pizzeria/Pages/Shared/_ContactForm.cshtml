@@ -1,0 +1,108 @@
+@model IndexModel
+@functions {
+    // First server-side validation message of a ContactInput field, or null when it is valid.
+    // A POST without any "Contact." field is bound with an empty prefix, so both keys are checked.
+    private string? ErrorFor(string field) =>
+        FirstError($"{nameof(IndexModel.Contact)}.{field}") ?? FirstError(field);
+
+    private string? FirstError(string key) =>
+        ViewData.ModelState.TryGetValue(key, out var entry) && entry.Errors.Count > 0
+            ? entry.Errors[0].ErrorMessage
+            : null;
+
+    // Ids for aria-describedby: only the ones actually rendered; null drops the attribute.
+    private static string? Ids(params string?[] ids)
+    {
+        var present = string.Join(' ', ids.Where(id => id is not null));
+        return present.Length == 0 ? null : present;
+    }
+}
+@{
+    var nameError = ErrorFor(nameof(ContactInput.Name));
+    var phoneError = ErrorFor(nameof(ContactInput.Phone));
+    var emailError = ErrorFor(nameof(ContactInput.Email));
+    var messageError = ErrorFor(nameof(ContactInput.Message));
+    var hasFieldErrors = !ViewData.ModelState.IsValid;
+}
+
+<section class="section section--red" id="@IndexModel.ContactFragment" aria-labelledby="contact-title">
+    <div class="container">
+        <h2 class="section__title" id="contact-title">Contacto y reservas</h2>
+        <div class="panel">
+            @if (Model.ContactSent)
+            {
+                <p class="form-status" role="status">Mensaje enviado</p>
+            }
+            @if (Model.ContactSaveFailed)
+            {
+                <p class="form-alert" role="alert">Error: No pudimos guardar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.</p>
+            }
+            else if (hasFieldErrors)
+            {
+                <p class="form-alert" role="alert">Error: El mensaje no se envió. Corrige los campos marcados y envíalo de nuevo.</p>
+            }
+
+            <form class="form" method="post" asp-page="/Index" asp-fragment="@IndexModel.ContactFragment">
+                <div class="field">
+                    <label class="field__label" for="contact-name">Nombre</label>
+                    <input class="field__input" type="text" id="contact-name" name="Contact.Name" value="@Model.Contact.Name"
+                           required maxlength="80" autocomplete="name"
+                           aria-invalid="@(nameError is null ? null : "true")"
+                           aria-describedby="@Ids(nameError is null ? null : "contact-name-error")">
+                    @if (nameError is not null)
+                    {
+                        <p class="field__error" id="contact-name-error">Error: @nameError</p>
+                    }
+                </div>
+
+                <p class="form__hint" id="contact-reply-hint">Déjanos un teléfono o un correo para responderte.</p>
+                <div class="form__pair">
+                    <div class="field">
+                        <label class="field__label" for="contact-phone">Teléfono</label>
+                        <input class="field__input" type="tel" id="contact-phone" name="Contact.Phone" value="@Model.Contact.Phone"
+                               maxlength="20" autocomplete="tel"
+                               aria-invalid="@(phoneError is null ? null : "true")"
+                               aria-describedby="@Ids("contact-reply-hint", phoneError is null ? null : "contact-phone-error")">
+                        @if (phoneError is not null)
+                        {
+                            <p class="field__error" id="contact-phone-error">Error: @phoneError</p>
+                        }
+                    </div>
+                    <div class="field">
+                        <label class="field__label" for="contact-email">Correo</label>
+                        <input class="field__input" type="email" id="contact-email" name="Contact.Email" value="@Model.Contact.Email"
+                               maxlength="254" autocomplete="email"
+                               aria-invalid="@(emailError is null ? null : "true")"
+                               aria-describedby="@Ids("contact-reply-hint", emailError is null ? null : "contact-email-error")">
+                        @if (emailError is not null)
+                        {
+                            <p class="field__error" id="contact-email-error">Error: @emailError</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="field__label" for="contact-message">Mensaje</label>
+                    <textarea class="field__input field__input--area" id="contact-message" name="Contact.Message"
+                              required maxlength="1000" rows="5"
+                              aria-invalid="@(messageError is null ? null : "true")"
+                              aria-describedby="@Ids("contact-message-hint", messageError is null ? null : "contact-message-error")">@Model.Contact.Message</textarea>
+                    <p class="field__hint" id="contact-message-hint">Para reservar, indica fecha, hora y número de personas</p>
+                    @if (messageError is not null)
+                    {
+                        <p class="field__error" id="contact-message-error">Error: @messageError</p>
+                    }
+                </div>
+
+                @* Honeypot: hidden from people by CSS and skipped by keyboard and screen readers. *@
+                <div class="hp" aria-hidden="true">
+                    <label for="contact-website">Deja este campo vacío</label>
+                    <input type="text" id="contact-website" name="Contact.Website" tabindex="-1" autocomplete="off">
+                </div>
+
+                <p class="form__legal">Al enviar el mensaje aceptas el <a class="form__link" asp-page="/Privacy">tratamiento de tus datos personales</a>.</p>
+                <button class="btn btn--primary form__submit" type="submit">Enviar mensaje</button>
+            </form>
+        </div>
+    </div>
+</section>

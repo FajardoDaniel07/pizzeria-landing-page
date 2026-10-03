@@ -1,0 +1,31 @@
+@model IndexModel
+
+@if (Model.Featured.Count > 0)
+{
+    <section class="section section--yellow" aria-labelledby="featured-title">
+        <div class="container">
+            <h2 class="section__title" id="featured-title">Pizzas destacadas</h2>
+            <ul class="featured">
+                @foreach (var item in Model.Featured)
+                {
+                    <li class="card">
+                        @if (item.ImagePath is null)
+                        {
+                            <img class="card__image" src="~/img/pizza-placeholder.svg" alt="@item.Name" width="400" height="400" loading="lazy">
+                        }
+                        else
+                        {
+                            <img class="card__image" src="@Url.Content("~/" + item.ImagePath.TrimStart('/'))" alt="@item.Name" width="400" height="400" loading="lazy">
+                        }
+                        <h3 class="card__name">@item.Name</h3>
+                        @if (!string.IsNullOrWhiteSpace(item.Description))
+                        {
+                            <p class="card__text">@item.Description</p>
+                        }
+                        <p class="sticker card__sticker">@PriceFormatter.ToCop(item.Price)</p>
+                    </li>
+                }
+            </ul>
+        </div>
+    </section>
+}

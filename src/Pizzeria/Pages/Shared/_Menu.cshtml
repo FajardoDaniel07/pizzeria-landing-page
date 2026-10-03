@@ -1,0 +1,31 @@
+@model IndexModel
+
+<section class="section section--cream" id="menu" aria-labelledby="menu-title">
+    <div class="container">
+        <h2 class="section__title" id="menu-title">Menú</h2>
+        @foreach (var group in Model.Menu)
+        {
+            <h3 class="menu__category">@group.Category.ToDisplayName()</h3>
+            <ul class="menu__list">
+                @foreach (var item in group.Items)
+                {
+                    <li class="menu__item">
+                        <div class="menu__row">
+                            <span class="menu__name">@item.Name</span>
+                            @if (item.IsFeatured)
+                            {
+                                <span class="stamp">Destacada</span>
+                            }
+                            <span class="menu__dots" aria-hidden="true"></span>
+                            <span class="menu__price">@PriceFormatter.ToCop(item.Price)</span>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(item.Description))
+                        {
+                            <p class="menu__text">@item.Description</p>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</section>

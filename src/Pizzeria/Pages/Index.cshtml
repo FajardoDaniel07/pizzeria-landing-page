@@ -1,10 +1,23 @@
-﻿@page
+@page
 @model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<partial name="_Hero" />
+<div class="checker" aria-hidden="true"></div>
+@if (Model.HasMenu)
+{
+    <partial name="_Featured" />
+    <partial name="_Menu" />
+}
+else
+{
+    @* Same notice for a database failure and for an empty menu: the #menu anchor always exists. *@
+    <section class="section section--cream" id="menu" aria-labelledby="menu-title">
+        <div class="container">
+            <h2 class="section__title" id="menu-title">Menú</h2>
+            <p class="notice">El menú no está disponible en este momento. Escríbenos por WhatsApp.</p>
+        </div>
+    </section>
+}
+<partial name="_About" />
+<partial name="_HoursLocation" />
+<partial name="_ContactForm" />

@@ -1,52 +1,60 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@inject IOptions<BusinessInfo> BusinessOptions
+@{
+    var business = BusinessOptions.Value;
+    var pageTitle = ViewData["Title"] as string;
+    var fullTitle = string.IsNullOrWhiteSpace(pageTitle) ? business.Name : $"{pageTitle} - {business.Name}";
+}
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Pizzeria</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Pizzeria.styles.css" asp-append-version="true" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@fullTitle</title>
+    <meta name="description" content="@business.Name, pizzería en @business.City. Mira el menú y pide por WhatsApp.">
+    <link rel="icon" href="~/favicon.svg" type="image/svg+xml">
+    @* Url.Content keeps the plain path: it must match the url() in site.css, or the font is downloaded twice. *@
+    <link rel="preload" href="@Url.Content("~/fonts/bowlby-one-latin-400-normal.woff2")" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Pizzeria</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-    <footer class="border-top footer text-muted">
+    <header class="site-header">
+        <div class="container site-header__inner">
+            <a class="site-header__brand" asp-page="/Index">@business.Name</a>
+            <nav class="site-nav" aria-label="Principal">
+                <ul class="site-nav__list">
+                    <li><a class="site-nav__link" asp-page="/Index" asp-fragment="menu">Menú</a></li>
+                    <li class="site-nav__wide"><a class="site-nav__link" asp-page="/Index" asp-fragment="horarios">Horarios</a></li>
+                    <li class="site-nav__wide"><a class="site-nav__link" asp-page="/Index" asp-fragment="contacto">Contacto</a></li>
+                    <li class="site-nav__wide"><a class="btn btn--primary btn--small" href="@business.WhatsAppUrl">WhatsApp</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="contenido">
+        @RenderBody()
+    </main>
+
+    <div class="checker" aria-hidden="true"></div>
+    <footer class="site-footer">
         <div class="container">
-            &copy; 2026 - Pizzeria - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <p class="site-footer__name">@business.Name</p>
+            <ul class="site-footer__list">
+                <li>Teléfono: <a class="site-footer__link" href="@business.PhoneUrl">@business.PhoneDisplay</a></li>
+                <li><a class="site-footer__link" href="@business.WhatsAppUrl">Escribir por WhatsApp</a></li>
+                @foreach (var social in business.Social)
+                {
+                    <li><a class="site-footer__link site-footer__link--social" href="@social.Url" rel="noopener noreferrer">@social.Name</a></li>
+                }
+                <li><a class="site-footer__link" asp-page="/Privacy">Tratamiento de datos personales</a></li>
+            </ul>
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
+    <div class="wa-bar">
+        <a class="btn btn--primary btn--block" href="@business.WhatsAppUrl">Pedir por WhatsApp</a>
+    </div>
 </body>
 </html>

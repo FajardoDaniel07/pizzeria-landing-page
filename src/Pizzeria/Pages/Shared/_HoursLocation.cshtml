@@ -1,0 +1,32 @@
+@model IndexModel
+
+<section class="section section--cream" id="horarios" aria-labelledby="hours-location-title">
+    <div class="container">
+        <h2 class="section__title" id="hours-location-title">Horarios y ubicación</h2>
+        <div class="tickets">
+            <div class="ticket">
+                <h3 class="ticket__title" id="hours-title">Horarios</h3>
+                <table class="hours" aria-labelledby="hours-title">
+                    <tbody>
+                        @foreach (var row in Model.Business.Hours)
+                        {
+                            <tr class="hours__row">
+                                <th class="hours__days" scope="row">@row.Days</th>
+                                <td class="hours__time">@row.Time</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="ticket">
+                <h3 class="ticket__title">Ubicación</h3>
+                <p class="ticket__line">@Model.Business.City</p>
+                @if (Model.Business.HasAddress)
+                {
+                    <p class="ticket__line">@Model.Business.Address</p>
+                    <p class="ticket__line"><a class="ticket__link" href="@Model.Business.MapsUrl" rel="noopener noreferrer">Cómo llegar</a></p>
+                }
+            </div>
+        </div>
+    </div>
+</section>

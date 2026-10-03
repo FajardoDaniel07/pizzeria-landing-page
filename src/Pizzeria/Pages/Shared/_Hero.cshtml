@@ -1,0 +1,22 @@
+@model IndexModel
+
+<section class="hero" aria-labelledby="hero-title">
+    <div class="container">
+        <div class="hero__content">
+            <h1 class="hero__name" id="hero-title">@Model.Business.Name</h1>
+            @* TEXTO DE EJEMPLO *@
+            <p class="hero__slogan">Pizza recién horneada, a un mensaje de distancia.</p>
+            <div class="hero__actions">
+                <a class="btn btn--primary" href="@Model.Business.WhatsAppUrl">Pedir por WhatsApp</a>
+                <a class="btn btn--secondary" href="#contacto">Reservar</a>
+            </div>
+        </div>
+    </div>
+    <div class="hero__art">
+        <img class="hero__pizza" src="~/img/pizza-placeholder.svg" alt="" width="400" height="400">
+        @if (Model.MinPrice is decimal minPrice)
+        {
+            <p class="sticker hero__sticker">Desde @PriceFormatter.ToCop(minPrice)</p>
+        }
+    </div>
+</section>

@@ -1,8 +1,37 @@
-﻿@page
+@page "/privacidad"
 @model PrivacyModel
+@inject IOptions<BusinessInfo> BusinessOptions
 @{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Tratamiento de datos personales";
+    var business = BusinessOptions.Value;
+    var responsible = business.HasLegalName ? $"{business.Name} ({business.LegalName})" : business.Name;
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+@* TEXTO ORIENTATIVO: pendiente de revisión del propietario. No es asesoría legal. *@
+<section class="section section--cream" aria-labelledby="privacy-title">
+    <div class="container">
+        <div class="prose">
+            <h1 class="section__title" id="privacy-title">Tratamiento de datos personales</h1>
+            <p class="prose__text">Este aviso explica qué hacemos con los datos que escribes en el formulario de contacto de @business.Name.</p>
+
+            <h2 class="prose__title">Responsable</h2>
+            @* PENDIENTE (NOMBRE LEGAL DEL RESPONSABLE): rellenar "Business:LegalName" en appsettings.json
+               con la razón social o el nombre de la persona responsable. Mientras esté vacío solo se muestra el nombre comercial. *@
+            <p class="prose__text">@responsible, @business.City. Teléfono y WhatsApp: <a class="prose__link" href="@business.PhoneUrl">@business.PhoneDisplay</a>.</p>
+
+            <h2 class="prose__title">Qué datos recogemos</h2>
+            <p class="prose__text">Tu nombre, tu teléfono, tu correo y el mensaje que escribes. No guardamos tu dirección IP ni el agente de usuario de tu navegador junto al mensaje.</p>
+            <p class="prose__text">La dirección IP solo se usa de forma temporal, sin guardarla, para limitar los envíos repetidos. El sitio usa únicamente las cookies técnicas que protegen y confirman el envío del formulario.</p>
+
+            <h2 class="prose__title">Para qué los usamos</h2>
+            <p class="prose__text">Solo para responder tu consulta o tu reserva.</p>
+
+            <h2 class="prose__title">Tus derechos</h2>
+            <p class="prose__text">Según la Ley 1581 de 2012 puedes conocer, actualizar y rectificar tus datos, pedir que los eliminemos y revocar la autorización para usarlos. Para hacerlo, <a class="prose__link" href="@business.WhatsAppUrl">escríbenos por WhatsApp</a> o llámanos.</p>
+
+            <div class="actions">
+                <a class="btn btn--primary" asp-page="/Index">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,6 +1,6 @@
 # 04 - Resumen: `landing-page`
 
-Fase 7 del flujo SDD. Estado al 2026-10-03: implementado y verificado en local; sin commits todavía.
+Fase 7 del flujo SDD. Estado al 2026-10-03: implementado, verificado en local y confirmado en `main`.
 
 ## Qué se hizo
 

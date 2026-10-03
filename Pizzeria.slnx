@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/Pizzeria/Pizzeria.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Pizzeria.Tests/Pizzeria.Tests.csproj" />
+  </Folder>
 </Solution>
